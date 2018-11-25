@@ -1,0 +1,115 @@
+# Description: This program take a list of numbers from the user and finds the sum and the product of those numbers.
+
+# Summation function will take the list in numbers returned to main() and sum them for the user
+def summation(theList):
+
+     # Initialize sum at zero
+     mySum = 0
+
+     # Take the length of the list
+     listLen = len(theList)
+
+     # FOR Loop will go through the list of numbers and add each number to the next number until it reaches the end of the range
+     for i in range(0, listLen):
+
+          # Equation for finding the sum of the numbers in the list
+          mySum = mySum + theList[i]
+
+     print("The summation is ",mySum)
+
+     # Return statement takes the program back to main() to print the sum for the user
+     return mySum
+
+
+
+
+# CreateIntList function allows for user to input numbers into list
+def createIntList(SENTINEL):
+
+     # Initialize list at empty
+     theList = []
+
+     # Input integer values for the list
+     listValues = int(input("Please enter a number: "))
+
+     # While Loop will end the prompt once the sentinel value is typed in
+     while listValues != SENTINEL:
+
+          # Each number provided by the user will be appended to the list
+          theList.append(listValues)
+
+          # User is prompted again for integers until sentinel is provided
+          listValues = int(input("Please enter a number: "))
+
+
+     print("For the list ", theList)
+
+     # Return statement will take the entirety of the list back to main to be processed in the functions summation() and multiplication()
+     return theList
+
+
+
+
+# Multiplication function takes the list returned to main() and multiplies each number in the list by each other
+def multiplication(theList):
+
+     # listLen is the size of the list provided and it takes into account the limits of indexing the list
+     listLen = len(theList) - 1
+
+     # Initialize myProd at 1 because initializing at 0 will invariably produce "0" no matter the input
+     myProd = 1
+
+     # For Loop will run through the integers provided by the user and multiply them together
+     for i in range(0, listLen):
+
+          # myProd calculates the product by multiplying all of the numbers within the list together
+          myProd = myProd * theList[i]
+
+
+     print("The product is ",myProd)
+
+     # Return function returns the product to main() to display the product to the user
+     return myProd
+
+
+
+
+# Main() function holds all of the functions and will facilitate user's list through each function to produce an output for the user
+def main():
+
+
+    print("Welcome to the Simple Math Helper")
+
+    # listCount prompts user for the number of lists they wish to have
+    listCount = int(input("How many lists would you like to create? "))
+
+    # Conditional statement to ensure that the user provides a valid number in listCount
+    if listCount <= 0:
+
+        print("Thank you for using the Simple Math Helper")
+
+    # If the listCount is valid (above zero) the program will prompt the user to provide a list
+    elif listCount > 0:
+
+         # For Loop takes into account the number of lists the user wishes to make (see listCount)
+         for i in range(0, listCount):
+
+
+              print("You are creating list#",i + 1)
+
+              # SENTINEL loop allows the user to create an "exit" to stop the program when they wish
+              SENTINEL = int(input("What do you want the sentinel to be? "))
+
+              # theList variable will send the user to the createIntList function to provide a list of numbers
+              theList = createIntList(SENTINEL)
+
+              # theSum variable will send the user's list to the summation function to find the sum
+              theSum = summation(theList)
+
+              # theProd variable will send the user's list to the multiplication function to find the product
+              theProd = multiplication(theList)
+
+              print("Thank you for using the Simple Math Helper")
+
+
+main()

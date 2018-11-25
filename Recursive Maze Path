@@ -1,0 +1,251 @@
+# Description:     This program is a maze finder that takes a maze from the user and searches for the exit.
+# Collaboration:   Collaboration was not allowed on this assignment.
+
+
+RIGHT = 0
+BOTTOM = 1
+LEFT = 2
+TOP = 3
+
+
+
+# This function opens the file, reads through it, gets information for the dimensions of the maze board, and the overall maze structure
+def readMaze(fileInput):
+
+
+    # Empty maze list will take in only the part of the file that is the actual maze
+    maze = []
+
+    # File is opened
+    fileOpen = open(fileInput)
+
+    # The first two lines of the file are separated from the rest of the file, since they designate the number of rows and columns, as well as where the exit is in the maze
+    firstLine = fileOpen.readline()
+    secondLine = fileOpen.readline()
+
+    # After the first two lines are separated, the rest of the file is read through
+    mazeFile = fileOpen.readlines()
+
+    fileOpen.close()
+
+
+    # The following variables will assign the number of rows and columns for the maze (these were separated earlier from the rest of the file)
+    numRow, numCol = firstLine.split(" ")
+
+    numRow = int(numRow)
+    numCol = int(numCol)
+
+
+    # The following variables will designate where in the maze the exit is (these were separated earlier from the rest of the file)
+    finRow, finCol = secondLine.split(" ")
+
+    finRow = int(finRow)
+    finCol = int(finCol)
+
+    # For loop iterates through what remains of the file
+    for line in mazeFile:
+
+        # Removes "/n"
+        line = line.strip().split(" ")
+
+        for i in range(len(line)):
+
+            line[i] = int(line[i])
+
+        maze.append(line)
+
+
+    # The separated components of the file will be returned to main()
+    return maze, numRow, numCol, finRow, finCol
+
+
+###########################################################################################################################################################################################
+
+# The user will be prompted to select a starting point inside the maze to begin
+def getUserStart(numRow, numCol):
+
+    # User picks starting row
+    userRow = int(input("Please enter a starting row: "))
+
+    # While Loop ensures that the user provides valid input
+    while userRow > numRow:
+
+        userRow = int(input("Please enter a starting row: "))
+
+    # User picks starting column
+    userCol = int(input("Please enter a starting column: "))
+
+    # While Loop ensures that the user provides valid input
+    while userCol > numCol:
+
+         userCol = int(input("Please enter a starting column: "))
+
+    # The user's chosen starting coordinates will be sent back to main()
+    return userRow, userCol
+
+
+###################################################################################################################################################################################
+
+# This function takes in the 2-D list from main, converts it into a 3-D list,  and, using the information for rows and columns in the file, creates the layout of the maze
+def createMaze(maze, numRow, numCol):
+
+    # Initialize empty list
+    listThree = []
+
+    counter = 0
+
+    # For loop goes through the number of rows indicated in the file to assemble the 2-D list properly inside of a 3-D list
+    for i in range(numRow):
+
+        listTwo = []
+
+        # As the program iterates over a certain number of sets in a row, that list will be apended to the larger 3-D list
+        for t in range(numCol):
+
+            listTwo.append(maze[counter])
+
+            counter += 1
+
+        listThree.append(listTwo)
+
+    # The completed 3-D list will be sent back to main()
+    return listThree
+
+####################################################################################################################################################################################
+
+# Here, the program will get the user's starting and point and go through the entire 3-D list to find the exit and will produce the pathway for the user
+def searchMaze(mazeList, userRow, userCol, finRow, finCol, finishList):
+
+    # If the user's starting choice is the exit spot for the maze, the program will end
+    if mazeList[userRow][userCol] == mazeList[finRow][finCol]:
+
+        # The user's choices will be added to finishList and printed for the user
+        finishList.append((userRow, userCol))
+
+        # FinishList will be returned to main() to be printed
+        return finishList
+
+    # If the right wall is open and the spot to the right of the current position is not already part of recorded pathway in finishList
+    if mazeList[userRow][userCol][RIGHT] == 0 and (userRow, userCol + 1) not in finishList:
+
+        # Make a hard copy of the finish list
+        copyList = list(finishList)
+
+        # Add the user's choice of a location to the copy list
+        copyList.append((userRow, userCol))
+
+        # Move the user to the next spot and then recurse the new location
+        chanceStep = searchMaze(mazeList, userRow, userCol + 1, finRow, finCol, copyList)
+
+        # As long as that spot does not return None, the function should be recursed
+        if chanceStep != None:
+
+            # Chance step will be returned to main() to be printed
+            return chanceStep
+
+
+    # If the bottom is open and the spot below it is not already part of the recorded pathway in finishList
+    if mazeList[userRow][userCol][BOTTOM] == 0 and (userRow + 1, userCol) not in finishList:
+
+        # Make a hard copy of the finish list
+        copyList = list(finishList)
+
+        # Add the user's choice of a location to the copy list
+        copyList.append((userRow, userCol))
+
+         # Move the user to the next spot and then recurse the new location
+        chanceStep = searchMaze(mazeList, userRow + 1, userCol, finRow, finCol, copyList)
+
+        # As long as that spot does not return None, the function should be recursed
+        if chanceStep != None:
+
+            # Chance step will be returned to main() to be printed
+            return chanceStep
+
+    # If the left is open and the spot to the left is not already part of the recorded pathway in finishList
+    if mazeList[userRow][userCol][LEFT] == 0 and (userRow, userCol - 1) not in finishList:
+
+        # Make a hard copy of the finish list
+        copyList = list(finishList)
+
+        # Add the user's choice of a location to the copy list
+        copyList.append((userRow, userCol))
+
+        # Move the user to the next spot and then recurse the new location
+        chanceStep = searchMaze(mazeList, userRow, userCol - 1, finRow, finCol, copyList)
+
+        # As long as that spot does not return None, the function should be recursed
+        if chanceStep != None:
+
+            # Chance step will be returned to main() to be printed
+            return chanceStep
+
+    # If the top is open and the spot above the current position is not already part of the recorded pathway in finishList
+    if mazeList[userRow][userCol][TOP] == 0 and (userRow - 1, userCol) not in finishList:
+
+        # Make a hard copy of the finish list
+        copyList = list(finishList)
+
+        # Add the user's choice of a location to the copy list
+        copyList.append((userRow, userCol))
+
+        # Move the user to the next spot and then recurse the new location
+        chanceStep = searchMaze(mazeList, userRow - 1, userCol, finRow, finCol, copyList)
+
+        # As long as that spot does not return None, the function should be recursed
+        if chanceStep != None:
+
+            # Chance step will be returned to main() to be printed
+            return chanceStep
+
+
+###################################################################################################################################################################################
+
+def main():
+
+    # This empty list will accumulate and print the pathway from where the user starts to the exit point for the user
+    finishList = []
+
+    # This variable will be the user's choice for where to start in what row
+    userRow = 0
+
+    # This variable will be the user's choice for where to start in what column
+    userCol = 0
+
+    # Creates an empty list to be filled in the readMaze() function
+
+    print("Welcome to the Maze Solver!")
+
+    # User provides the file to be opened
+    fileInput = input("Please enter the filename of the maze: ")
+
+    # User is sent to this function to input a file and have that file opened
+    maze, numRow, numCol, finRow, finCol = readMaze(fileInput)
+
+    # This creates the 3-D list for the user
+    listThree  = createMaze(maze, numRow, numCol)
+
+    # The user's choice for a starting place in the maze will be taken from user input
+    userRow, userCol = getUserStart(numRow, numCol)
+
+    # This will take the user's starting location choice, search for an exit, and then print out the sequential pathway for going from the start point to the finish
+    finishPath = searchMaze(listThree, userRow, userCol, finRow, finCol, finishList)
+
+    # If the user chooses the spot where the finish is or there is a pathway, once finishPath receives None, the program will end and the pathway will be printed for the user
+    if finishPath != None:
+
+        print("Solution found!")
+
+        # For loop will iterate through all the recorded locations that lead to the exit and will print them
+        for item in finishPath:
+
+            print(item)
+
+    # If the user chooses a spot where there are walls on all sides or there is no exit from the maze
+    else:
+
+        print("No solution found!")
+
+
+
+main()
